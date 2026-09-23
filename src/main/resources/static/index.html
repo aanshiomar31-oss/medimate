@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediMate — Enterprise Medicine Supply Chain & Custody Engine</title>
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="/" class="brand">
+      <div class="brand-icon">💊</div>
+      <div class="brand-text">
+        <h1>MediMate</h1>
+        <p>Pharma Supply Chain &amp; Custody Engine</p>
+      </div>
+    </a>
+
+    <div class="nav-status">
+      <div class="system-status">
+        <div class="pulse-dot"></div>
+        <span id="system-health-label">System Active</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="/swagger-ui.html" target="_blank" class="nav-btn">
+          <span>📑 Swagger OpenAPI</span>
+        </a>
+        <a href="/h2-console" target="_blank" class="nav-btn">
+          <span>🗄️ H2 Database</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('overview')">
+        <span>📊</span> Executive Overview
+      </button>
+      <button class="tab-btn" onclick="switchTab('verifier')">
+        <span>🛡️</span> Anti-Counterfeit Batch Verifier
+      </button>
+      <button class="tab-btn" onclick="switchTab('coldchain')">
+        <span>❄️</span> Cold-Chain &amp; Stalled Shipments
+      </button>
+      <button class="tab-btn" onclick="switchTab('actions')">
+        <span>🔄</span> Custody Handover &amp; Recalls
+      </button>
+    </nav>
+
+    <!-- Stat Bar (Visible on All Tabs) -->
+    <section class="stats-grid">
+      <div class="stat-card cyan">
+        <div class="stat-header">
+          <span class="stat-title">Active Batches</span>
+          <span class="stat-icon">📦</span>
+        </div>
+        <div class="stat-value" id="kpi-active-batches">--</div>
+        <div class="stat-subtext">Across hospital distribution network</div>
+      </div>
+
+      <div class="stat-card emerald">
+        <div class="stat-header">
+          <span class="stat-title">Transit SLA Compliance</span>
+          <span class="stat-icon">⏱️</span>
+        </div>
+        <div class="stat-value" id="kpi-compliance-rate">--%</div>
+        <div class="stat-subtext">On-time cold-chain deliveries</div>
+      </div>
+
+      <div class="stat-card crimson">
+        <div class="stat-header">
+          <span class="stat-title">Stalled &amp; Temp Breaches</span>
+          <span class="stat-icon">🚨</span>
+        </div>
+        <div class="stat-value" id="kpi-stalled-count" style="color: var(--accent-crimson);">--</div>
+        <div class="stat-subtext"><span style="color: var(--accent-crimson);">Critical priority</span> action needed</div>
+      </div>
+
+      <div class="stat-card amber">
+        <div class="stat-header">
+          <span class="stat-title">Expiring Batches (60d)</span>
+          <span class="stat-icon">⏳</span>
+        </div>
+        <div class="stat-value" id="kpi-expiring-count">--</div>
+        <div class="stat-subtext">Approaching shelf-life cutoff</div>
+      </div>
+    </section>
+
+    <!-- Tab 1: Executive Overview -->
+    <section id="tab-overview" class="tab-content">
+      <div class="content-grid">
+        <!-- Left: Cold-Chain Stalled Shipments Table -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2><span>❄️</span> Critical In-Transit &amp; Cold-Chain Alerts</h2>
+            <span class="panel-badge badge-crimson" id="stalled-badge">Live Alerts</span>
+          </div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Shipment #</th>
+                  <th>Medicine</th>
+                  <th>Destination</th>
+                  <th>Carrier</th>
+                  <th>Hours in Transit</th>
+                  <th>Temp (°C)</th>
+                  <th>Severity</th>
+                </tr>
+              </thead>
+              <tbody id="stalled-shipments-table-body">
+                <tr><td colspan="7" style="text-align: center; color: var(--text-sub);">Loading active shipments...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Process Mining Stage Latency -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2><span>📈</span> Process Mining Latency</h2>
+            <span class="panel-badge badge-cyan">Throughput</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Average dwell hours per stage calculated across historical custody logs:
+          </p>
+
+          <div id="latency-bars-container">
+            <!-- Dynamic latency bars rendered here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Anti-Counterfeit Batch Verifier -->
+    <section id="tab-verifier" class="tab-content" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <h2><span>🛡️</span> Pharmaceutical Batch Provenance &amp; Authenticity Inspector</h2>
+          <span class="panel-badge badge-emerald">Anti-Counterfeit Check</span>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+          Inspect complete unbroken custody transitions from the FDA/GMP manufacturer to the hospital pharmacy. Detect counterfeit gaps or temperature tampering.
+        </p>
+
+        <!-- Search Box -->
+        <div class="search-box">
+          <input type="text" id="verify-batch-input" placeholder="Enter Batch Number (e.g., MED-2026-PF01)" value="MED-2026-PF01">
+          <select id="quick-batch-select" onchange="document.getElementById('verify-batch-input').value = this.value">
+            <option value="MED-2026-PF01">MED-2026-PF01 (Humalog Insulin — Authentic &amp; Delivered)</option>
+            <option value="MED-2026-CV02">MED-2026-CV02 (COVID-19 Vaccine — Temp Excursion Alert)</option>
+            <option value="MED-2026-AG03">MED-2026-AG03 (Augmentin — Expiring Soon)</option>
+            <option value="MED-2026-LP04">MED-2026-LP04 (Lipitor — Regulatory Recalled)</option>
+          </select>
+          <button class="btn-primary" onclick="verifyBatch()">
+            <span>🔍</span> Verify Batch
+          </button>
+        </div>
+
+        <!-- Verification Results Container -->
+        <div id="verification-result-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Cold-Chain Telemetry -->
+    <section id="tab-coldchain" class="tab-content" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <h2><span>❄️</span> Cold-Chain Sensor Telemetry &amp; Biologics Monitor</h2>
+          <span class="panel-badge badge-cyan">IoT Sensor Logs</span>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+          Real-time temperature telemetry for refrigerated vaccines, insulin vials, and temperature-sensitive biologics in transit.
+        </p>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Batch Number</th>
+                <th>Drug Name</th>
+                <th>Category</th>
+                <th>Allowed Range</th>
+                <th>Current Status</th>
+                <th>Current Location</th>
+                <th>Current Custodian</th>
+              </tr>
+            </thead>
+            <tbody id="cold-chain-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Custody Handover & Batch Recalls -->
+    <section id="tab-actions" class="tab-content" style="display: none;">
+      <div class="content-grid">
+        <!-- Custody Handover Form -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2><span>🔄</span> Advance Batch Custody Handover</h2>
+            <span class="panel-badge badge-cyan">State Transition</span>
+          </div>
+
+          <form id="custody-form" onsubmit="handleCustodyTransfer(event)">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Select Batch</label>
+              <select id="transfer-batch-id" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Next Supply Chain Stage</label>
+              <select id="transfer-target-status" required>
+                <option value="QUALITY_TESTED">QUALITY_TESTED (Lab QC Release)</option>
+                <option value="CENTRAL_DEPOT">CENTRAL_DEPOT (Warehouse Storage)</option>
+                <option value="IN_TRANSIT">IN_TRANSIT (Refrigerated Carrier Dispatch)</option>
+                <option value="DELIVERED_TO_PHARMACY">DELIVERED_TO_PHARMACY (Hospital Pharmacy Receipt)</option>
+                <option value="DISPENSED">DISPENSED (Patient Administration)</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">New Custodian / Recipient Name</label>
+              <input type="text" id="transfer-holder" placeholder="e.g. Dr. Jennifer Wu (Lead Pharmacist)" required>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">New Physical Location</label>
+              <input type="text" id="transfer-location" placeholder="e.g. Manipal Hospital Pharmacy Cold Vault" required>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Recorded Temperature (°C) [Optional]</label>
+              <input type="number" step="0.1" id="transfer-temperature" placeholder="e.g. 4.2">
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Custody Notes &amp; Inspection Sign-off</label>
+              <input type="text" id="transfer-notes" placeholder="Inspection verified, seals intact">
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+              <span>✍️</span> Record Handover &amp; Update Audit Trail
+            </button>
+          </form>
+        </div>
+
+        <!-- Emergency Recall Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2><span>🚨</span> Emergency Regulatory Recall</h2>
+            <span class="panel-badge badge-crimson">Quarantine Action</span>
+          </div>
+
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Execute immediate regulatory quarantine on compromised batches. Locks batch from further distribution and records an FDA compliance audit log.
+          </p>
+
+          <form id="recall-form" onsubmit="handleRecall(event)">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Select Batch to Recall</label>
+              <select id="recall-batch-id" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Authorizing Official Name</label>
+              <input type="text" id="recall-authorized-by" placeholder="e.g. Dr. A. Sharma (FDA Drug Inspector)" required>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+              <label style="display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem;">Recall Reason / Defect Report</label>
+              <input type="text" id="recall-reason" placeholder="e.g. Microbial contamination reported in vial seal" required>
+            </div>
+
+            <button type="submit" class="btn-danger" style="width: 100%; padding: 0.8rem;">
+              <span>⚠️</span> Trigger Emergency Batch Recall &amp; Quarantine
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Logic -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
