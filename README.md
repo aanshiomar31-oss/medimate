@@ -5,8 +5,7 @@
 [![Hibernate](https://img.shields.io/badge/ORM-Hibernate%20%2F%20JPA-59666C.svg?logo=hibernate&logoColor=white)](https://hibernate.org/)
 [![Database](https://img.shields.io/badge/Database-H2%20(PostgreSQL--ready)-yellow.svg)](https://www.h2database.com/)
 [![OpenAPI](https://img.shields.io/badge/API%20Docs-Swagger%203%20%2F%20OpenAPI-85EA2D.svg?logo=swagger&logoColor=black)](http://localhost:8080/swagger-ui.html)
-[![Compliance](https://img.shields.io/badge/Standard-FDA%2021%20CFR%20Part%2011%20%7C%20DSCSA-blue.svg)](https://www.fda.gov/drugs/drug-supply-chain-security-act-dscsa)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 
 MediMate is an enterprise pharmaceutical supply chain tracking and audit service built with Java 11 and Spring Boot. It monitors drug batches from manufacturing through hospital delivery, validates custody transfers, tracks cold-chain storage temperatures, and detects distribution delays using process mining principles.
 
@@ -260,17 +259,3 @@ Once started, the service is available at `http://localhost:8080/`.
 
 ---
 
-## Project Highlights for CV / Resume
-
-This project demonstrates skills relevant to enterprise backend development and process mining:
-
-- **State Machine Workflow**: Designed a 7-stage pharmaceutical lifecycle model enforcing strict custody transitions and rejecting invalid jumps.
-- **Anti-Counterfeit Provenance**: Implemented verification logic that inspects unbroken custody chains between FDA-licensed manufacturers and hospital pharmacies.
-- **Cold-Chain SLA Monitoring**: Built real-time monitoring for temperature excursions and transit delays on temperature-sensitive biologics.
-- **Process Mining Analytics**: Structured immutable audit logs to measure stage dwell times and discover logistical bottlenecks.
-- **RESTful API Design**: Built clean, validated Spring Boot endpoints documented with OpenAPI / Swagger.
-
----
-
-## License
-This project is open-source under the [Apache 2.0 License](LICENSE).
