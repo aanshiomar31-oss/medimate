@@ -95,18 +95,18 @@ cd medimate
 ./mvnw spring-boot:run
 ```
 
-Once started, the backend is available at: **`http://localhost:8080`**
+Once started, explore the application:
+* 🌐 **Interactive Web Dashboard**: **[http://localhost:8080/](http://localhost:8080/)**
+* 📑 **Interactive Swagger UI**: **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+* 🗄️ **H2 In-Memory Database Console**: **[http://localhost:8080/h2-console](http://localhost:8080/h2-console)** (JDBC URL: `jdbc:h2:mem:medimatedb`, User: `sa`, Password: empty)
 
-### 3. Explore Interactive Swagger UI
-Open your browser and navigate to:
-👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
-
-### 4. Access H2 Database Console
-To inspect relational tables directly:
-* **URL**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
-* **JDBC URL**: `jdbc:h2:mem:medimatedb`
-* **User Name**: `sa`
-* **Password**: *(leave blank)*
+### 3. Interactive Web Dashboard Features
+The application embeds a responsive dark-mode pharmaceutical monitoring dashboard:
+* **Live KPI Counters**: Instant visual telemetry on active batches, active shipments, stalled transit items, compliance rates, and recalls.
+* **Anti-Counterfeit Batch Provenance Verifier**: Search any batch number (e.g. `MED-2026-PF01`, `MED-2026-CV02`, `MED-2026-LP04`) to inspect unbroken custody logs, custodian digital signatures, location trace, and cold-chain compliance.
+* **Real-time Cold-Chain Telemetry**: Live overview of all active inventory batches with temperature thresholds and storage status.
+* **Process Mining & Latency Heatmap**: Celonis-style breakdown of average and maximum stage dwell times to isolate distribution bottlenecks.
+* **Custody Handover & Regulatory Recall Controls**: In-browser forms to transfer batch custody or execute emergency FDA/CDSCO recalls.
 
 ---
 
